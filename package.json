@@ -14,6 +14,7 @@
     "@clerk/nextjs": "^6.36.5",
     "@clerk/themes": "^2.4.46",
     "next": "16.1.0",
+    "postgres": "^3.4.8",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "zod": "^4.3.4"

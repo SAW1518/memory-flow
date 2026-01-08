@@ -13,7 +13,7 @@
   "dependencies": {
     "@clerk/nextjs": "^6.36.5",
     "@clerk/themes": "^2.4.46",
-    "next": "16.0.3",
+    "next": "16.1.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "zod": "^4.3.4"
@@ -24,7 +24,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.0.3",
+    "eslint-config-next": "16.1.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

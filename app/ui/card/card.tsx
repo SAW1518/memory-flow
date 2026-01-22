@@ -17,15 +17,9 @@ export const Card = ({ content, id }: GeneralWord) => {
       <p className="col-span-9 text-left text-xl font-medium group-hover:text-white">
         {content}
       </p>
-      <div className="col-span-1 flex flex-row-reverse gap-3">
-        <TrashIcon
-          className="col-span-1 justify-center transition-colors hover:text-red-500"
-          size={16}
-        />
-        <PlayIcon
-          className="col-span-1 flex justify-center transition-colors group-hover:text-green-400"
-          size={16}
-        />
+      <div className="col-span-1 flex flex-row-reverse gap-2 sm:gap-3">
+        <TrashIcon className="h-4 w-4 flex-shrink-0 transition-colors hover:text-red-500 sm:h-5 sm:w-5" />
+        <PlayIcon className="h-4 w-4 flex-shrink-0 transition-colors group-hover:text-green-400 sm:h-5 sm:w-5" />
       </div>
 
       {/*    <button className="col-span-1 flex justify-center hover:text-blue-400 transition-colors">

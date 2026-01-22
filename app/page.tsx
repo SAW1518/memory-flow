@@ -37,7 +37,7 @@ export default async function Home() {
           </p>
         </div>
       </section>
-      <ol className="mt-8 grid w-full grid-cols-3 gap-1">
+      <ol className="mt-8 grid w-full grid-cols-1 gap-2 sm:grid-cols-2 md:gap-3 lg:grid-cols-3">
         {words.map((word) => (
           <Card key={word.id} {...word} />
         ))}

@@ -23,12 +23,11 @@ export default async function Home() {
           <p className="text-sm uppercase text-neutral-700 font-mono">0 WORDS</p>
         </div>
       </section>
-      <section className="mt-8 w-full grid grid-cols-3 gap-1">
+      <ol className="mt-8 w-full grid grid-cols-3 gap-1">
         {words.map((word) => (
           <Card key={word.id} {...word} />
         ))}
-      </section>
-      <WordPanel />
+      </ol>
     </main>
   );
 }

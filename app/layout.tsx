@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
-import { auth, currentUser } from '@clerk/nextjs/server'
-import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { auth } from '@clerk/nextjs/server'
+import { ClerkProvider } from "@clerk/nextjs";
 
 import "./globals.css";
 import { dark } from "@clerk/themes";
+import { Logo } from "@/app/ui/logo/logo";
+import { Navbar } from "@/app/ui/navbar/navbar";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -41,23 +43,8 @@ export default async function RootLayout({
           }}
         >
           <header className="flex items-center self-stretch justify-between py-8">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                <span className="text-black font-bold text-lg">M</span>
-              </div>
-              <span className="text-xl font-bold tracking-tight text-neutral-100">Memory Flow</span>
-            </div>
-            <nav className="text-sm font-medium text-neutral-500 flex items-center gap-6" >
-              {/* chancge this to links */}
-              <span className="hover:text-white transition-colors cursor-pointer">Words</span>
-              <span className="hover:text-white transition-colors cursor-pointer">About</span>
-              <SignedOut >
-                <SignInButton mode='modal' />
-              </SignedOut>
-              <SignedIn>
-                <UserButton showName />
-              </SignedIn>
-            </nav>
+            <Logo />
+            <Navbar />
           </header>
           {children}
         </ClerkProvider>

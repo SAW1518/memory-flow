@@ -13,12 +13,12 @@ export default function WordLayout({
           href="/"
           className="flex cursor-pointer items-center font-mono text-sm font-normal text-neutral-500 font-stretch-condensed transition-colors hover:text-white"
         >
-          <ArrowLeftIcon size={20} className="mr-2" />
+          <ArrowLeftIcon size={20} className="m-2" />
           ESC to exit
         </Link>
-        <p className="font-mono text-sm text-neutral-700 uppercase">
+        {/* <p className="font-mono text-sm text-neutral-700 uppercase">
           126 WPM Accuracy: 100% dsdds
-        </p>
+        </p> */}
       </div>
       {children}
     </main>

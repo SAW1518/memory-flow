@@ -2,7 +2,7 @@ import Form from 'next/form';
 import { createInvoice } from '@/app/lib/actions';
 import { Card } from '@/app/ui/card/card';
 import { getWords } from './lib/data';
-import { GeneralWord } from './lib/types';
+import type { GeneralWord } from '@prisma/client';
 
 export default async function Home() {
   const words: GeneralWord[] = await getWords();
@@ -10,15 +10,15 @@ export default async function Home() {
     <main className="flex w-full flex-col items-center justify-between sm:items-start">
       <section className="mt-16 flex w-full flex-col">
         <h1 className="text-4xl font-bold text-white">
-          Register new vocabulary.
+          register new vocabulary.
         </h1>
         <p className="mt-6 text-neutral-500">
-          Register new vocabulary to improve your memory.
+          register new vocabulary to improve your memory.
         </p>
         <Form action={createInvoice} className="relative mt-8 flex gap-4">
           <input
             className="w-full rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-2 text-neutral-500"
-            placeholder="Type a word or topic (e.g., 'Science')..."
+            placeholder="type a word or topic (e.g., 'science')..."
             type="text"
             name="word"
           />

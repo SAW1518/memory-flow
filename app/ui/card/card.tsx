@@ -1,5 +1,5 @@
 'use client';
-import { GeneralWord } from '@/app/lib/types';
+import type { GeneralWord } from '@prisma/client';
 import { TrashIcon } from '@/app/ui/icons/trash';
 import { PlayIcon } from '@/app/ui/icons/play';
 import Link from 'next/link';

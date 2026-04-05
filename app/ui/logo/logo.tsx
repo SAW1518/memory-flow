@@ -17,7 +17,7 @@ export const Logo = () => {
         <span className="text-lg font-bold text-black">M</span>
       </div>
       <span className="text-xl font-bold tracking-tight text-neutral-100">
-        Memory Flow
+        memory_flow
       </span>
     </div>
   );

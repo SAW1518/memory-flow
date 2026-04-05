@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, Outfit } from 'next/font/google';
+import localFont from 'next/font/local';
 import { auth } from '@clerk/nextjs/server';
 import { ClerkProvider } from '@clerk/nextjs';
 
@@ -8,14 +8,9 @@ import { dark } from '@clerk/themes';
 import { Logo } from '@/app/ui/logo/logo';
 import { Navbar } from '@/app/ui/navbar/navbar';
 
-const inter = Inter({
-  variable: '--font-inter',
-  subsets: ['latin'],
-});
-
-const outfit = Outfit({
-  variable: '--font-outfit',
-  subsets: ['latin'],
+const myFont = localFont({
+  src: '../public/jetbrains-mono/fonts/JetBrainsMono-Regular.woff2',
+  fallback: ['system-ui'],
 });
 
 export const metadata: Metadata = {
@@ -34,7 +29,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${outfit.variable} flex min-h-screen flex-col px-2 font-sans antialiased md:px-8 lg:px-24 xl:px-32`}
+        className={`${myFont.className} flex min-h-screen flex-col px-2 font-sans antialiased md:px-8 lg:px-24 xl:px-36`}
       >
         <ClerkProvider
           appearance={{

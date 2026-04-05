@@ -1,12 +1,9 @@
 'use server';
-import postgres from 'postgres';
-import { GeneralWord } from './types';
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
+import { prisma } from './prisma';
 
 export async function getWords() {
   try {
-    const result = await sql<GeneralWord[]>`SELECT * FROM general_words`;
-    return result;
+    return await prisma.generalWord.findMany();
   } catch (error) {
     console.error('Error fetching words:', error);
     return [];

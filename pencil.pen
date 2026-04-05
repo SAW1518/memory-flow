@@ -111,6 +111,7 @@
             48,
             128
           ],
+          "alignItems": "center",
           "children": [
             {
               "type": "frame",
@@ -2597,6 +2598,7 @@
                 16,
                 24
               ],
+              "justifyContent": "space_between",
               "alignItems": "center",
               "children": [
                 {
@@ -2624,48 +2626,6 @@
                       "content": "ESC to exit",
                       "fontFamily": "JetBrains Mono",
                       "fontSize": 13,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "Qyotz",
-              "name": "Practice Info Bar",
-              "width": "fill_container",
-              "padding": [
-                16,
-                24
-              ],
-              "justifyContent": "space_between",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "1YdKn",
-                  "name": "Left Info",
-                  "layout": "vertical",
-                  "gap": 4,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "80Ztr",
-                      "name": "practiceTitle",
-                      "fill": "$text-primary",
-                      "content": "Practice Mode",
-                      "fontFamily": "JetBrains Mono",
-                      "fontSize": 16,
-                      "fontWeight": "700"
-                    },
-                    {
-                      "type": "text",
-                      "id": "YgFCF",
-                      "name": "practiceDesc",
-                      "fill": "$text-secondary",
-                      "content": "Type the word correctly 5 times to complete.",
-                      "fontFamily": "IBM Plex Mono",
-                      "fontSize": 14,
                       "fontWeight": "normal"
                     }
                   ]
@@ -2706,6 +2666,134 @@
                       "fontFamily": "JetBrains Mono",
                       "fontSize": 14,
                       "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Qyotz",
+              "name": "Practice Info Bar",
+              "width": "fill_container",
+              "padding": [
+                16,
+                24
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "1YdKn",
+                  "name": "Left Info",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "80Ztr",
+                      "name": "practiceTitle",
+                      "fill": "$text-primary",
+                      "content": "Practice Mode",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "YgFCF",
+                      "name": "practiceDesc",
+                      "fill": "$text-secondary",
+                      "content": "Type the word correctly 5 times to complete.",
+                      "fontFamily": "IBM Plex Mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "z7sJf",
+                  "name": "Action Buttons",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "II4H5",
+                      "name": "Register Word Btn",
+                      "fill": "$accent-green",
+                      "cornerRadius": 8,
+                      "gap": 8,
+                      "padding": [
+                        10,
+                        20
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "Wxpua",
+                          "name": "plusIcon",
+                          "width": 16,
+                          "height": 16,
+                          "iconFontName": "plus",
+                          "iconFontFamily": "lucide",
+                          "fill": "#0A0A0A"
+                        },
+                        {
+                          "type": "text",
+                          "id": "gHjCp",
+                          "name": "btnText",
+                          "fill": "#0A0A0A",
+                          "content": "Register Word",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "nC14v",
+                      "name": "Practice Offline Btn",
+                      "cornerRadius": 8,
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": 1,
+                        "fill": "$text-secondary"
+                      },
+                      "gap": 8,
+                      "padding": [
+                        10,
+                        20
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "NS1pc",
+                          "name": "offlineIcon",
+                          "width": 16,
+                          "height": 16,
+                          "iconFontName": "wifi-off",
+                          "iconFontFamily": "lucide",
+                          "fill": "$text-secondary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Q7bdz",
+                          "name": "offlineText",
+                          "fill": "$text-secondary",
+                          "content": "Register Offline",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        }
+                      ]
                     }
                   ]
                 }
@@ -4280,6 +4368,7 @@
                 12,
                 16
               ],
+              "justifyContent": "space_between",
               "alignItems": "center",
               "children": [
                 {
@@ -4310,42 +4399,6 @@
                       "fontWeight": "normal"
                     }
                   ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "zBDaK",
-              "name": "Info Bar",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 4,
-              "padding": [
-                8,
-                16
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "TkgHw",
-                  "name": "titleTxt",
-                  "fill": "$text-primary",
-                  "content": "Practice Mode",
-                  "fontFamily": "JetBrains Mono",
-                  "fontSize": 16,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "text",
-                  "id": "VPl15",
-                  "name": "descTxt",
-                  "fill": "$text-secondary",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Type the word correctly 5 times to complete.",
-                  "fontFamily": "IBM Plex Mono",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -4383,6 +4436,126 @@
                       "fontFamily": "JetBrains Mono",
                       "fontSize": 12,
                       "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "zBDaK",
+              "name": "Info Bar",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                8,
+                16
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "TkgHw",
+                  "name": "titleTxt",
+                  "fill": "$text-primary",
+                  "content": "Practice Mode",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "VPl15",
+                  "name": "descTxt",
+                  "fill": "$text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Type the word correctly 5 times to complete.",
+                  "fontFamily": "IBM Plex Mono",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "HY7Lw",
+                  "name": "Action Buttons",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "3HyHb",
+                      "name": "Register Btn",
+                      "fill": "$accent-green",
+                      "cornerRadius": 6,
+                      "gap": 6,
+                      "padding": [
+                        8,
+                        16
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "ldeM6",
+                          "name": "plusIc",
+                          "width": 14,
+                          "height": 14,
+                          "iconFontName": "plus",
+                          "iconFontFamily": "lucide",
+                          "fill": "#0A0A0A"
+                        },
+                        {
+                          "type": "text",
+                          "id": "NlmEN",
+                          "name": "regTxt",
+                          "fill": "#0A0A0A",
+                          "content": "Register Word",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "CVqVH",
+                      "name": "Practice Offline Btn",
+                      "cornerRadius": 6,
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "$text-secondary"
+                      },
+                      "gap": 6,
+                      "padding": [
+                        8,
+                        16
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "lupiE",
+                          "name": "offlineIc",
+                          "width": 14,
+                          "height": 14,
+                          "iconFontName": "wifi-off",
+                          "iconFontFamily": "lucide",
+                          "fill": "$text-secondary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "LJGsL",
+                          "name": "offlineTxt",
+                          "fill": "$text-secondary",
+                          "content": "Register Offline",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
                     }
                   ]
                 }
@@ -5508,6 +5681,7 @@
                 12,
                 16
               ],
+              "justifyContent": "space_between",
               "alignItems": "center",
               "children": [
                 {
@@ -5538,42 +5712,6 @@
                       "fontWeight": "normal"
                     }
                   ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "JXZVO",
-              "name": "Info Bar",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 4,
-              "padding": [
-                8,
-                16
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "CAZ10",
-                  "name": "titleTxt",
-                  "fill": "$text-primary",
-                  "content": "Practice Mode",
-                  "fontFamily": "JetBrains Mono",
-                  "fontSize": 16,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "text",
-                  "id": "sgy1u",
-                  "name": "descTxt",
-                  "fill": "$text-secondary",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Type the word correctly 5 times to complete.",
-                  "fontFamily": "IBM Plex Mono",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -5611,6 +5749,126 @@
                       "fontFamily": "JetBrains Mono",
                       "fontSize": 12,
                       "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "JXZVO",
+              "name": "Info Bar",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                8,
+                16
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "CAZ10",
+                  "name": "titleTxt",
+                  "fill": "$text-primary",
+                  "content": "Practice Mode",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "sgy1u",
+                  "name": "descTxt",
+                  "fill": "$text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Type the word correctly 5 times to complete.",
+                  "fontFamily": "IBM Plex Mono",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "e54rz",
+                  "name": "Action Buttons",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ccq7z",
+                      "name": "Register Btn",
+                      "fill": "$accent-green",
+                      "cornerRadius": 6,
+                      "gap": 6,
+                      "padding": [
+                        8,
+                        16
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "t11k5",
+                          "name": "plusIc",
+                          "width": 14,
+                          "height": 14,
+                          "iconFontName": "plus",
+                          "iconFontFamily": "lucide",
+                          "fill": "#0A0A0A"
+                        },
+                        {
+                          "type": "text",
+                          "id": "AEvQu",
+                          "name": "regTxt",
+                          "fill": "#0A0A0A",
+                          "content": "Register Word",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "m4Xc6",
+                      "name": "Practice Offline Btn",
+                      "cornerRadius": 6,
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "$text-secondary"
+                      },
+                      "gap": 6,
+                      "padding": [
+                        8,
+                        16
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "DbUSO",
+                          "name": "wifiOffIc",
+                          "width": 14,
+                          "height": 14,
+                          "iconFontName": "wifi-off",
+                          "iconFontFamily": "lucide",
+                          "fill": "$text-secondary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "eQ2qn",
+                          "name": "offlineTxt",
+                          "fill": "$text-secondary",
+                          "content": "Register Offline",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
                     }
                   ]
                 }

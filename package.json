@@ -12,7 +12,11 @@
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "db:setup": "docker compose up -d --wait && prisma migrate deploy && prisma db seed",
+    "db:start": "docker compose start",
+    "db:stop": "docker compose stop",
+    "db:reset": "docker compose down -v && pnpm db:setup"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.36.5",
@@ -40,6 +44,7 @@
     "prettier-plugin-tailwindcss": "^0.7.2",
     "prisma": "^7.5.0",
     "tailwindcss": "^4",
+    "tsx": "^4.19.2",
     "typescript": "^5"
   }
 }

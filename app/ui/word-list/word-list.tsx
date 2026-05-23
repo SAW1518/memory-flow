@@ -13,15 +13,17 @@ export function WordList({ words }: { words: GeneralWord[] }) {
 
   const filtered = useMemo(
     () =>
-      query ? words?.filter((filterWord) => filterWord.content?.includes(query)) : words,
-    [words, query],
+      query
+        ? words?.filter((filterWord) => filterWord.content?.includes(query))
+        : words,
+    [words, query]
   );
 
   const setQueryQueried = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setQuery(e.target.value.trim().toLowerCase());
     },
-    [],
+    []
   );
 
   const handleSubmit = useCallback(
@@ -30,12 +32,16 @@ export function WordList({ words }: { words: GeneralWord[] }) {
       const match = words?.find((w) => w.content?.toLowerCase() === query);
       router.push(`/word?practice=${match?.content ?? query}`);
     },
-    [words, query, router],
+    [words, query, router]
   );
 
   return (
     <>
-      <Form action={createInvoice} className="relative mt-8 flex gap-4" onSubmit={handleSubmit}>
+      <Form
+        action={createInvoice}
+        className="relative mt-8 flex gap-4"
+        onSubmit={handleSubmit}
+      >
         <input
           className="w-full rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-2 text-neutral-500"
           placeholder="type a word or topic (e.g., 'science')..."

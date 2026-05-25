@@ -61,3 +61,25 @@ export async function getOfflineWords(): Promise<OfflineWord[]> {
     tx.oncomplete = () => db.close();
   });
 }
+
+export async function deleteOfflineWord(content: string): Promise<void> {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readwrite');
+    const store = tx.objectStore(STORE);
+    const index = store.index('content');
+    const keyReq = index.getKey(content);
+    keyReq.onsuccess = () => {
+      const key = keyReq.result;
+      if (key === undefined) {
+        resolve();
+        return;
+      }
+      const delReq = store.delete(key);
+      delReq.onsuccess = () => resolve();
+      delReq.onerror = () => reject(delReq.error);
+    };
+    keyReq.onerror = () => reject(keyReq.error);
+    tx.oncomplete = () => db.close();
+  });
+}

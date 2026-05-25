@@ -1,11 +1,15 @@
 'use client';
 
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Form from 'next/form';
-import { createInvoice } from '@/app/lib/actions';
+import { createInvoice, syncOfflineWords } from '@/app/lib/actions';
 import { Card, type WordSources } from '@/app/ui/card/card';
-import { getOfflineWords } from '@/app/lib/offline-db';
+import {
+  getOfflineWords,
+  deleteOfflineWord,
+} from '@/app/lib/offline-db';
+import { DbStatusBanner } from '@/app/ui/db-status/db-status-banner';
 import type { GeneralWord } from '@prisma/client';
 
 type MergedWord = GeneralWord & { sources: WordSources };
@@ -13,19 +17,59 @@ type MergedWord = GeneralWord & { sources: WordSources };
 export function WordList({
   words,
   userWordContents,
+  dbOk,
 }: {
   words: GeneralWord[];
   userWordContents: string[];
+  dbOk: boolean;
 }) {
   const [query, setQuery] = useState('');
   const [offlineContents, setOfflineContents] = useState<string[]>([]);
+  const [syncing, setSyncing] = useState(false);
+  const syncingRef = useRef(false);
   const router = useRouter();
 
-  useEffect(() => {
+  const loadOffline = useCallback(() => {
     getOfflineWords()
       .then((rows) => setOfflineContents(rows.map((r) => r.content)))
       .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    loadOffline();
+  }, [loadOffline]);
+
+  useEffect(() => {
+    if (!dbOk) return;
+    if (offlineContents.length === 0) return;
+    if (syncingRef.current) return;
+
+    syncingRef.current = true;
+    let cancelled = false;
+
+    (async () => {
+      setSyncing(true);
+      try {
+        const result = await syncOfflineWords(offlineContents);
+        if (cancelled) return;
+        if (!result.dbOk) return;
+        await Promise.all(
+          result.synced.map((c) => deleteOfflineWord(c).catch(() => {}))
+        );
+        loadOffline();
+        router.refresh();
+      } catch {
+        // swallow
+      } finally {
+        syncingRef.current = false;
+        if (!cancelled) setSyncing(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [dbOk, offlineContents, loadOffline, router]);
 
   const merged: MergedWord[] = useMemo(() => {
     const userSet = new Set(userWordContents);
@@ -99,6 +143,11 @@ export function WordList({
 
   return (
     <>
+      <DbStatusBanner
+        dbOk={dbOk}
+        syncing={syncing}
+        pendingCount={offlineContents.length}
+      />
       <Form
         action={createInvoice}
         className="relative mt-8 flex gap-4"

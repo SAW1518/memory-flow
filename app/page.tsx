@@ -1,6 +1,8 @@
 import { getWords, getUserWordContents } from './lib/data';
 import { WordList } from '@/app/ui/word-list/word-list';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   const [wordsResult, userResult] = await Promise.all([
     getWords(),

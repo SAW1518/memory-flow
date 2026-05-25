@@ -35,6 +35,7 @@ export default async function RootLayout({
           appearance={{
             theme: dark,
           }}
+          publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
         >
           <header className="flex items-center justify-between self-stretch py-8">
             <Logo />

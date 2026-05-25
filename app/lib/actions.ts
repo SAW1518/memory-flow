@@ -1,7 +1,7 @@
 'use server';
-import { auth } from '@clerk/nextjs/server';
+// import { auth } from '@clerk/nextjs/server';
 import { createWordSchema } from './action.typs';
-import { prisma } from './prisma';
+// import { prisma } from './prisma';
 
 export const createInvoice = async (formData: FormData): Promise<void> => {
   const newWord = createWordSchema.parse({
@@ -13,7 +13,11 @@ export const createInvoice = async (formData: FormData): Promise<void> => {
 
 export type SyncResult = { synced: string[]; failed: string[]; dbOk: boolean };
 
+// User-words sync disabled until Clerk publishableKey is configured.
+// Re-enable once CLERK_PUBLISHABLE_KEY is set in the deploy env.
 export async function syncOfflineWords(contents: string[]): Promise<SyncResult> {
+  return { synced: [], failed: contents, dbOk: true };
+  /*
   const synced: string[] = [];
   const failed: string[] = [];
 
@@ -43,4 +47,5 @@ export async function syncOfflineWords(contents: string[]): Promise<SyncResult> 
     console.error('Sync aborted, DB unreachable:', err);
     return { synced: [], failed: contents, dbOk: false };
   }
+  */
 }

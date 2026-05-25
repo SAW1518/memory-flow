@@ -1,14 +1,10 @@
-import { getWords, getUserWordContents } from './lib/data';
+import { getWords } from './lib/data';
 import { WordList } from '@/app/ui/word-list/word-list';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const [wordsResult, userResult] = await Promise.all([
-    getWords(),
-    getUserWordContents(),
-  ]);
-  const dbOk = wordsResult.dbOk && userResult.dbOk;
+  const wordsResult = await getWords();
   return (
     <main className="flex w-full flex-col items-center justify-between sm:items-start">
       <section className="mt-16 flex w-full flex-col">
@@ -20,8 +16,8 @@ export default async function Home() {
         </p>
         <WordList
           words={wordsResult.words}
-          userWordContents={userResult.contents}
-          dbOk={dbOk}
+          userWordContents={[]}
+          dbOk={wordsResult.dbOk}
         />
       </section>
     </main>

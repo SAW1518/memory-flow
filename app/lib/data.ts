@@ -1,5 +1,5 @@
 'use server';
-import { auth } from '@clerk/nextjs/server';
+// import { auth } from '@clerk/nextjs/server';
 import { prisma } from './prisma';
 import type { GeneralWord } from '@prisma/client';
 
@@ -19,7 +19,11 @@ export async function getWords(): Promise<{ words: GeneralWord[]; dbOk: boolean 
   }
 }
 
+// User-words path disabled until Clerk publishableKey is configured.
+// Re-enable once CLERK_PUBLISHABLE_KEY is set in the deploy env.
 export async function getUserWordContents(): Promise<{ contents: string[]; dbOk: boolean }> {
+  return { contents: [], dbOk: true };
+  /*
   try {
     const { userId } = await auth();
     if (!userId) return { contents: [], dbOk: true };
@@ -30,4 +34,5 @@ export async function getUserWordContents(): Promise<{ contents: string[]; dbOk:
     console.error('Error fetching user words:', error);
     return { contents: [], dbOk: false };
   }
+  */
 }

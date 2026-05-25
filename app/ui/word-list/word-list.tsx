@@ -1,22 +1,84 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Form from 'next/form';
 import { createInvoice } from '@/app/lib/actions';
-import { Card } from '@/app/ui/card/card';
+import { Card, type WordSources } from '@/app/ui/card/card';
+import { getOfflineWords } from '@/app/lib/offline-db';
 import type { GeneralWord } from '@prisma/client';
 
-export function WordList({ words }: { words: GeneralWord[] }) {
+type MergedWord = GeneralWord & { sources: WordSources };
+
+export function WordList({
+  words,
+  userWordContents,
+}: {
+  words: GeneralWord[];
+  userWordContents: string[];
+}) {
   const [query, setQuery] = useState('');
+  const [offlineContents, setOfflineContents] = useState<string[]>([]);
   const router = useRouter();
+
+  useEffect(() => {
+    getOfflineWords()
+      .then((rows) => setOfflineContents(rows.map((r) => r.content)))
+      .catch(() => {});
+  }, []);
+
+  const merged: MergedWord[] = useMemo(() => {
+    const userSet = new Set(userWordContents);
+    const offlineSet = new Set(offlineContents);
+    const byContent = new Map<string, MergedWord>();
+
+    for (const w of words ?? []) {
+      byContent.set(w.content, {
+        ...w,
+        sources: {
+          general: true,
+          user: userSet.has(w.content),
+          offline: offlineSet.has(w.content),
+        },
+      });
+    }
+
+    const now = new Date();
+    let syntheticId = -1;
+    for (const content of userWordContents) {
+      if (byContent.has(content)) continue;
+      byContent.set(content, {
+        id: syntheticId--,
+        content,
+        created_at: now,
+        updated_at: now,
+        sources: {
+          general: false,
+          user: true,
+          offline: offlineSet.has(content),
+        },
+      });
+    }
+    for (const content of offlineContents) {
+      if (byContent.has(content)) continue;
+      byContent.set(content, {
+        id: syntheticId--,
+        content,
+        created_at: now,
+        updated_at: now,
+        sources: { general: false, user: false, offline: true },
+      });
+    }
+
+    return Array.from(byContent.values());
+  }, [words, userWordContents, offlineContents]);
 
   const filtered = useMemo(
     () =>
       query
-        ? words?.filter((filterWord) => filterWord.content?.includes(query))
-        : words,
-    [words, query]
+        ? merged.filter((filterWord) => filterWord.content?.includes(query))
+        : merged,
+    [merged, query]
   );
 
   const setQueryQueried = useCallback(
@@ -29,10 +91,10 @@ export function WordList({ words }: { words: GeneralWord[] }) {
   const handleSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      const match = words?.find((w) => w.content?.toLowerCase() === query);
+      const match = merged.find((w) => w.content?.toLowerCase() === query);
       router.push(`/word?practice=${match?.content ?? query}`);
     },
-    [words, query, router]
+    [merged, query, router]
   );
 
   return (
@@ -66,7 +128,14 @@ export function WordList({ words }: { words: GeneralWord[] }) {
       </section>
       <ol className="mt-8 grid w-full grid-cols-1 gap-2 sm:grid-cols-2 md:gap-3 lg:grid-cols-3">
         {filtered?.map((word) => (
-          <Card key={word.id} {...word} />
+          <Card
+            key={word.id}
+            id={word.id}
+            content={word.content}
+            created_at={word.created_at}
+            updated_at={word.updated_at}
+            sources={word.sources}
+          />
         ))}
         {filtered?.length === 0 && query && (
           <li className="col-span-full text-sm text-neutral-600">

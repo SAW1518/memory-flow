@@ -3,6 +3,17 @@ import { useSearchParams } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import { Cursor } from '../ui/cursor/cursor';
+import { PlusIcon } from '../ui/icons/plus';
+import { WifiOffIcon } from '../ui/icons/wifi-off';
+import { addOfflineWord, hasOfflineWord } from '../lib/offline-db';
+
+const OFFLINE_LABELS = {
+  idle: 'Register Offline',
+  saving: 'Saving...',
+  saved: 'Saved Offline',
+  exists: 'Already Saved',
+  error: 'Error — Retry',
+}
 
 // Returns the color class for a letter based on its typing state
 function getLetterColorClass(typedChar: string | undefined, letter: string) {
@@ -23,15 +34,43 @@ export default function WordPage() {
   const [repetitions, setRepetitions] = useState(0);
   const [completed, setCompleted] = useState(false);
   const [maxRepetitions, setMaxRepetitions] = useState(5);
+  const [offlineStatus, setOfflineStatus] = useState<
+    'idle' | 'saving' | 'saved' | 'exists' | 'error'
+  >('idle');
+
+  async function handleRegisterOffline() {
+    if (!word) return;
+    setOfflineStatus('saving');
+    try {
+      await addOfflineWord(word);
+      setOfflineStatus('saved');
+    } catch (err) {
+      const name = (err as { name?: string })?.name;
+      setOfflineStatus(name === 'ConstraintError' ? 'exists' : 'error');
+    }
+  }
 
   // Auto-focus the hidden input on mount
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
+  // Reflect persisted offline state on mount / when word changes
+  useEffect(() => {
+    if (!word) return;
+    let cancelled = false;
+    hasOfflineWord(word)
+      .then((exists) => {
+        if (!cancelled && exists) setOfflineStatus('saved');
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [word]);
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (completed) return;
-
     const value = e.target.value;
 
     // Prevent typing beyond word length
@@ -90,8 +129,11 @@ export default function WordPage() {
             Type the word correctly {maxRepetitions} times to complete.
           </p>
         </div>
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="flex flex-col gap-6"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="flex items-center justify-end gap-2">
             <button
               onClick={() => changeMax(-1)}
               disabled={maxRepetitions <= 1}
@@ -107,6 +149,24 @@ export default function WordPage() {
               className="flex h-6 w-6 items-center justify-center rounded text-neutral-400 hover:text-neutral-200"
             >
               {'>'}
+            </button>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              className="flex items-center gap-2 rounded-lg bg-emerald-400 px-4 py-2 text-sm font-medium text-neutral-900 transition-colors hover:bg-emerald-300"
+            >
+              <PlusIcon className="h-4 w-4" />
+              Register Word
+            </button>
+            <button
+              type="button"
+              onClick={handleRegisterOffline}
+              disabled={offlineStatus === 'saving' || offlineStatus === 'saved'}
+              className="flex items-center gap-2 rounded-lg border border-neutral-700 px-4 py-2 text-sm font-medium text-neutral-200 transition-colors hover:bg-neutral-800 disabled:opacity-50"
+            >
+              <WifiOffIcon className="h-4 w-4" />
+              {OFFLINE_LABELS[offlineStatus]}
             </button>
           </div>
         </div>

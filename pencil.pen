@@ -210,6 +210,7 @@
               "name": "divider",
               "width": "fill_container",
               "height": 20,
+              "gap": 12,
               "justifyContent": "space_between",
               "alignItems": "center",
               "children": [
@@ -232,6 +233,171 @@
                   "fontFamily": "JetBrains Mono",
                   "fontSize": 12,
                   "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "kquxH",
+              "name": "filterRow",
+              "width": "fill_container",
+              "gap": 8,
+              "padding": [
+                0,
+                0,
+                32,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "B0GNjJ",
+                  "name": "hintGeneral",
+                  "fill": "#1F1F1F",
+                  "cornerRadius": 6,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1,
+                    "fill": "#3a3a3a"
+                  },
+                  "gap": 8,
+                  "padding": [
+                    6,
+                    12
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "zZLX9",
+                      "name": "h1i",
+                      "width": 14,
+                      "height": 14,
+                      "iconFontName": "list",
+                      "iconFontFamily": "lucide",
+                      "fill": "$text-primary"
+                    },
+                    {
+                      "type": "text",
+                      "id": "en7eE",
+                      "name": "h1t",
+                      "fill": "$text-primary",
+                      "content": "all  6",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "lvuh8",
+                  "name": "hintGeneral",
+                  "fill": "#262626",
+                  "cornerRadius": 6,
+                  "gap": 8,
+                  "padding": [
+                    6,
+                    12
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "b0JsU7",
+                      "name": "h1i",
+                      "width": 14,
+                      "height": 14,
+                      "iconFontName": "globe",
+                      "iconFontFamily": "lucide",
+                      "fill": "#10B981"
+                    },
+                    {
+                      "type": "text",
+                      "id": "fjIaM",
+                      "name": "h1t",
+                      "fill": "#10B981",
+                      "content": "general  3",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "RXP6a",
+                  "name": "hintRegistered",
+                  "fill": "#262626",
+                  "cornerRadius": 6,
+                  "gap": 8,
+                  "padding": [
+                    6,
+                    12
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "X1FYQ",
+                      "name": "h2i",
+                      "width": 14,
+                      "height": 14,
+                      "iconFontName": "user-check",
+                      "iconFontFamily": "lucide",
+                      "fill": "#06B6D4"
+                    },
+                    {
+                      "type": "text",
+                      "id": "TKZmK",
+                      "name": "h2t",
+                      "fill": "#06B6D4",
+                      "content": "registered  2",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "tr9So",
+                  "name": "hintOffline",
+                  "fill": "#262626",
+                  "cornerRadius": 6,
+                  "gap": 8,
+                  "padding": [
+                    6,
+                    12
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "KPIaE",
+                      "name": "h3i",
+                      "width": 14,
+                      "height": 14,
+                      "iconFontName": "wifi-off",
+                      "iconFontFamily": "lucide",
+                      "fill": "#F59E0B"
+                    },
+                    {
+                      "type": "text",
+                      "id": "p1iJt",
+                      "name": "h3t",
+                      "fill": "#F59E0B",
+                      "content": "offline  1",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
                 }
               ]
             },

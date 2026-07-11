@@ -16,10 +16,11 @@ model GeneralWord {
 }
 
 model UserWord {
-  user_id String @id @db.VarChar(255)
+  user_id String @db.VarChar(255)
   content String @db.VarChar(255)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  
+
+  @@id([user_id, content])
   @@map("users_words")
 }

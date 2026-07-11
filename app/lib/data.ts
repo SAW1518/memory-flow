@@ -1,11 +1,22 @@
 'use server';
-// import { auth } from '@clerk/nextjs/server';
+import { auth } from '@clerk/nextjs/server';
 import { prisma } from './prisma';
 import type { GeneralWord } from '@prisma/client';
 
 function isNextDynamicError(err: unknown): boolean {
   const digest = (err as { digest?: string })?.digest;
   return typeof digest === 'string' && digest.startsWith('DYNAMIC_SERVER_USAGE');
+}
+
+export async function getDbStatus(): Promise<boolean> {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    return true;
+  } catch (error) {
+    if (isNextDynamicError(error)) throw error;
+    console.error('DB status check failed:', error);
+    return false;
+  }
 }
 
 export async function getWords(): Promise<{ words: GeneralWord[]; dbOk: boolean }> {
@@ -19,11 +30,7 @@ export async function getWords(): Promise<{ words: GeneralWord[]; dbOk: boolean 
   }
 }
 
-// User-words path disabled until Clerk publishableKey is configured.
-// Re-enable once CLERK_PUBLISHABLE_KEY is set in the deploy env.
 export async function getUserWordContents(): Promise<{ contents: string[]; dbOk: boolean }> {
-  return { contents: [], dbOk: true };
-  /*
   try {
     const { userId } = await auth();
     if (!userId) return { contents: [], dbOk: true };
@@ -34,5 +41,4 @@ export async function getUserWordContents(): Promise<{ contents: string[]; dbOk:
     console.error('Error fetching user words:', error);
     return { contents: [], dbOk: false };
   }
-  */
 }

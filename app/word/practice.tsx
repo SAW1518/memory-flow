@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import clsx from 'clsx';
 import { Cursor } from '../ui/cursor/cursor';
 import { PlusIcon } from '../ui/icons/plus';
@@ -7,6 +8,7 @@ import { WifiOffIcon } from '../ui/icons/wifi-off';
 import { addOfflineWord, hasOfflineWord } from '../lib/offline-db';
 import { registerWord } from '../lib/actions';
 import { DbStatusBanner } from '../ui/db-status/db-status-banner';
+import { useEscapeClose } from '../lib/use-escape-close';
 
 const OFFLINE_LABELS = {
   idle: 'Register Offline',
@@ -37,6 +39,22 @@ function getLetterColorClass(typedChar: string | undefined, letter: string) {
 
 export function Practice({ word, dbOk }: { word: string; dbOk: boolean }) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+
+  // "ESC to exit" — leave practice mode back to the home page
+  useEscapeClose(() => router.push('/'));
+
+  // Clicking outside the practice box (layout <main>) also exits,
+  // except on the top navbar (<header>) which has its own links
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('main') || target.closest('header')) return;
+      router.push('/');
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [router]);
 
   const [typed, setTyped] = useState('');
   const [repetitions, setRepetitions] = useState(0);
@@ -151,7 +169,7 @@ export function Practice({ word, dbOk }: { word: string; dbOk: boolean }) {
       />
 
       <div className="mx-6">
-        <DbStatusBanner dbOk={dbOk} syncing={false} pendingCount={0} />
+        <DbStatusBanner dbOk={dbOk} />
       </div>
 
       {/* Header */}

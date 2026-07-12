@@ -40,36 +40,18 @@ export async function registerWord(content: string): Promise<RegisterWordResult>
   }
 }
 
-export type SyncResult = { synced: string[]; failed: string[]; dbOk: boolean };
-
-export async function syncOfflineWords(contents: string[]): Promise<SyncResult> {
-  const synced: string[] = [];
-  const failed: string[] = [];
-
+// Deletes the signed-in user's registered copy of a word.
+// General words are curated by the app owner and are never user-deletable.
+export async function deleteUserWord(content: string): Promise<boolean> {
   try {
     const { userId } = await auth();
-    if (!userId) {
-      return { synced: [], failed: contents, dbOk: true };
-    }
-
-    await prisma.$queryRaw`SELECT 1`;
-
-    for (const content of contents) {
-      try {
-        await prisma.userWord.upsert({
-          where: { user_id_content: { user_id: userId, content } },
-          update: {},
-          create: { user_id: userId, content },
-        });
-        synced.push(content);
-      } catch (err) {
-        console.error('Sync row failed:', content, err);
-        failed.push(content);
-      }
-    }
-    return { synced, failed, dbOk: true };
+    if (!userId) return false;
+    await prisma.userWord.deleteMany({ where: { user_id: userId, content } });
+    revalidatePath('/');
+    return true;
   } catch (err) {
-    console.error('Sync aborted, DB unreachable:', err);
-    return { synced: [], failed: contents, dbOk: false };
+    console.error('deleteUserWord failed:', err);
+    return false;
   }
 }
+

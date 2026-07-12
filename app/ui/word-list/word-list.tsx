@@ -1,32 +1,31 @@
 'use client';
 
-import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Form from 'next/form';
 import clsx from 'clsx';
-import { createInvoice, syncOfflineWords } from '@/app/lib/actions';
+import { createInvoice, deleteUserWord } from '@/app/lib/actions';
 import { Card, type WordSources } from '@/app/ui/card/card';
 import {
   getOfflineWords,
   deleteOfflineWord,
 } from '@/app/lib/offline-db';
 import { DbStatusBanner } from '@/app/ui/db-status/db-status-banner';
-import { ListIcon } from '@/app/ui/icons/list';
-import { GlobeIcon } from '@/app/ui/icons/globe';
-import { UserCheckIcon } from '@/app/ui/icons/user-check';
-import { WifiOffIcon } from '@/app/ui/icons/wifi-off';
+import { DeleteWordModal } from '@/app/ui/word-list/delete-word-modal';
+import { DefaultFiltersModal } from '@/app/ui/word-list/default-filters-modal';
+import { SlidersIcon } from '@/app/ui/icons/sliders';
+import {
+  SOURCE_FILTERS,
+  type SourceKey,
+  loadDefaultFilters,
+  saveDefaultFilters,
+} from '@/app/ui/word-list/source-filters';
 import type { GeneralWord } from '@prisma/client';
 
 type MergedWord = GeneralWord & { sources: WordSources };
 
-type SourceFilter = 'all' | 'general' | 'user' | 'offline';
-
-const SOURCE_FILTERS = [
-  { key: 'all', label: 'all', Icon: ListIcon, text: 'text-neutral-200' },
-  { key: 'general', label: 'general', Icon: GlobeIcon, text: 'text-emerald-400' },
-  { key: 'user', label: 'registered', Icon: UserCheckIcon, text: 'text-cyan-400' },
-  { key: 'offline', label: 'offline', Icon: WifiOffIcon, text: 'text-amber-400' },
-] as const;
+const readOfflineContents = () =>
+  getOfflineWords().then((rows) => rows.map((r) => r.content));
 
 export function WordList({
   words,
@@ -38,54 +37,90 @@ export function WordList({
   dbOk: boolean;
 }) {
   const [query, setQuery] = useState('');
-  const [sourceFilter, setSourceFilter] = useState<SourceFilter>('all');
+  // Selected source filters; empty = "all" (no filtering)
+  const [sourceFilters, setSourceFilters] = useState<SourceKey[]>([]);
+
+  const toggleSourceFilter = useCallback((key: SourceKey | 'all') => {
+    setSourceFilters((prev) =>
+      key === 'all'
+        ? []
+        : prev.includes(key)
+          ? prev.filter((k) => k !== key)
+          : [...prev, key]
+    );
+  }, []);
+  
   const [offlineContents, setOfflineContents] = useState<string[]>([]);
-  const [syncing, setSyncing] = useState(false);
-  const syncAttemptedRef = useRef(false);
+  const [deleteTarget, setDeleteTarget] = useState<MergedWord | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [defaultFilters, setDefaultFilters] = useState<SourceKey[]>([]);
+  const [defaultsOpen, setDefaultsOpen] = useState(false);
   const router = useRouter();
 
-  const loadOffline = useCallback(() => {
-    getOfflineWords()
-      .then((rows) => setOfflineContents(rows.map((r) => r.content)))
+  // General words are owner-curated and shared — only user/offline copies are deletable
+  const performDelete = useCallback(
+    async (word: MergedWord, keys: SourceKey[]) => {
+      setDeleting(true);
+      try {
+        await Promise.all(
+          keys
+            .filter((k) => k !== 'general')
+            .map((k) =>
+              k === 'user'
+                ? deleteUserWord(word.content)
+                : deleteOfflineWord(word.content).catch(() => {})
+            )
+        );
+        if (keys.includes('offline')) {
+          readOfflineContents()
+            .then(setOfflineContents)
+            .catch(() => {});
+        }
+        router.refresh();
+      } finally {
+        setDeleting(false);
+        setDeleteTarget(null);
+      }
+    },
+    [router]
+  );
+
+  // Single deletable source deletes directly; multiple open the modal
+  const handleDeleteRequest = useCallback(
+    (word: MergedWord) => {
+      const deletable = (['user', 'offline'] as SourceKey[]).filter(
+        (k) => word.sources[k]
+      );
+      if (deletable.length === 0) return;
+      if (deletable.length === 1) performDelete(word, deletable);
+      else setDeleteTarget(word);
+    },
+    [performDelete]
+  );
+
+  // Load persisted offline words + saved default filters once on mount
+  useEffect(() => {
+    readOfflineContents()
+      .then(setOfflineContents)
+      .catch(() => {});
+    loadDefaultFilters()
+      .then((keys) => {
+        setDefaultFilters(keys);
+        if (keys.length > 0) setSourceFilters(keys);
+      })
       .catch(() => {});
   }, []);
 
-  useEffect(() => {
-    loadOffline();
-  }, [loadOffline]);
-
-  // Sync runs once per page load (mount / full refresh), never retries.
-  useEffect(() => {
-    if (!dbOk) return;
-    if (offlineContents.length === 0) return;
-    if (syncAttemptedRef.current) return;
-
-    syncAttemptedRef.current = true;
-    let cancelled = false;
-
-    (async () => {
-      setSyncing(true);
-      try {
-        const result = await syncOfflineWords(offlineContents);
-        if (cancelled) return;
-        if (!result.dbOk) return;
-        if (result.synced.length === 0) return;
-        await Promise.all(
-          result.synced.map((c) => deleteOfflineWord(c).catch(() => {}))
-        );
-        loadOffline();
-        router.refresh();
-      } catch {
-        // swallow
-      } finally {
-        if (!cancelled) setSyncing(false);
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [dbOk, offlineContents, loadOffline, router]);
+  const handleSaveDefaults = useCallback((keys: SourceKey[]) => {
+    try {
+      saveDefaultFilters(keys);
+    } catch {
+      // localStorage unavailable — apply for this session only
+    }
+    setDefaultFilters(keys);
+    setSourceFilters(keys);
+    setDefaultsOpen(false);
+  }, []);
 
   const merged: MergedWord[] = useMemo(() => {
     const userSet = new Set(userWordContents);
@@ -145,14 +180,14 @@ export function WordList({
 
   const filtered = useMemo(() => {
     let list =
-      sourceFilter === 'all'
+      sourceFilters.length === 0
         ? merged
-        : merged.filter((w) => w.sources[sourceFilter]);
+        : merged.filter((w) => sourceFilters.some((k) => w.sources[k]));
     if (query) {
       list = list.filter((filterWord) => filterWord.content?.includes(query));
     }
     return list;
-  }, [merged, query, sourceFilter]);
+  }, [merged, query, sourceFilters]);
 
   const setQueryQueried = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -172,11 +207,7 @@ export function WordList({
 
   return (
     <>
-      <DbStatusBanner
-        dbOk={dbOk}
-        syncing={syncing}
-        pendingCount={offlineContents.length}
-      />
+      <DbStatusBanner dbOk={dbOk} />
       <Form
         action={createInvoice}
         className="relative mt-8 flex gap-4"
@@ -205,24 +236,39 @@ export function WordList({
         </div>
       </section>
       <div className="mt-6 flex flex-wrap items-center gap-3">
-        {SOURCE_FILTERS.map(({ key, label, Icon, text }) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => setSourceFilter(key)}
-            className={clsx(
-              'flex items-center gap-2 rounded-lg border px-3 py-1.5 font-mono text-sm transition-colors',
-              text,
-              sourceFilter === key
-                ? 'border-neutral-500 bg-neutral-800'
-                : 'border-neutral-800 bg-neutral-900 hover:bg-neutral-800'
-            )}
-          >
-            <Icon className="h-4 w-4" />
-            {label}
-            <span className="opacity-70">{counts[key]}</span>
-          </button>
-        ))}
+        {SOURCE_FILTERS.map(({ key, label, Icon, text }) => {
+          const active =
+            key === 'all'
+              ? sourceFilters.length === 0
+              : sourceFilters.includes(key);
+          return (
+            <button
+              key={key}
+              type="button"
+              onClick={() => toggleSourceFilter(key)}
+              className={clsx(
+                'flex items-center gap-2 rounded-lg border px-3 py-1.5 font-mono text-sm transition-colors',
+                text,
+                active
+                  ? 'border-neutral-500 bg-neutral-800'
+                  : 'border-neutral-800 bg-neutral-900 hover:bg-neutral-800'
+              )}
+            >
+              <Icon className="h-4 w-4" />
+              {label}
+              <span className="opacity-70">{counts[key]}</span>
+            </button>
+          );
+        })}
+        <button
+          type="button"
+          onClick={() => setDefaultsOpen(true)}
+          title="Set default filters"
+          className="flex items-center gap-2 rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-1.5 font-mono text-sm text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-neutral-200"
+        >
+          <SlidersIcon className="h-4 w-4" />
+          default
+        </button>
       </div>
       <ol className="mt-8 grid w-full grid-cols-1 gap-2 sm:grid-cols-2 md:gap-3 lg:grid-cols-3">
         {filtered?.map((word) => (
@@ -233,16 +279,39 @@ export function WordList({
             created_at={word.created_at}
             updated_at={word.updated_at}
             sources={word.sources}
+            onDelete={
+              word.sources.user || word.sources.offline
+                ? () => handleDeleteRequest(word)
+                : undefined
+            }
           />
         ))}
-        {filtered?.length === 0 && (query || sourceFilter !== 'all') && (
+        {filtered?.length === 0 && (query || sourceFilters.length > 0) && (
           <li className="col-span-full text-sm text-neutral-600">
             {query
               ? `no words match “${query}”`
-              : `no ${sourceFilter === 'user' ? 'registered' : sourceFilter} words yet`}
+              : `no ${sourceFilters
+                  .map((k) => (k === 'user' ? 'registered' : k))
+                  .join(' / ')} words yet`}
           </li>
         )}
       </ol>
+      {defaultsOpen && (
+        <DefaultFiltersModal
+          initial={defaultFilters}
+          onSave={handleSaveDefaults}
+          onClose={() => setDefaultsOpen(false)}
+        />
+      )}
+      {deleteTarget && (
+        <DeleteWordModal
+          content={deleteTarget.content}
+          sources={deleteTarget.sources}
+          deleting={deleting}
+          onDelete={(keys) => performDelete(deleteTarget, keys)}
+          onClose={() => setDeleteTarget(null)}
+        />
+      )}
     </>
   );
 }
